@@ -6,28 +6,35 @@ public class Player : MonoBehaviour
     public Transform head;
     public PlayerItemInteractor itemInteractor;
     public PlayerMovement movement;
+    [SerializeField]
     public MovementConfig movementConfig;
     private void Start()
     {
+        if (!TryGetComponent(out itemInteractor))
+        {
+            Debug.LogWarning("No item interactor Script attached!");
+        }
         if (!TryGetComponent(out movement))
         {
             Debug.LogWarning("No movement Script attached!");
         }
         else
         {
-            movement.Initiate(movementConfig);
+            movement.Initiate(movementConfig,head);
         }
     }
 
     void Update()
     {
-        var res = itemInteractor.CheckForItem(head);
-        if (res.Success)
+        if (itemInteractor != null)
         {
-            var itemObject = res.Value;
-            itemObject.PickMeUp(inventory);
+            var res = itemInteractor.CheckForItem(head);
+            if (res.Success)
+            {
+                var itemObject = res.Value;
+                itemObject.PickMeUp(inventory);
+            }
         }
-        
         if(movement != null)
         {
             Vector2 axis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));

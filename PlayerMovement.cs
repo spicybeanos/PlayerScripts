@@ -9,17 +9,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     public CharacterController cc;
     [SerializeField]
-    public GameObject Head;
+    public Transform Head;
     [Header("Acceleration due to gravity")]
     public float Gravity;
     [SerializeField]
     public Transform GroundCheck;
     [SerializeField]
     public LayerMask GroundLayerMask;
-    public bool IsGrounded ;//{ get;private set; }
+    public bool IsGrounded { get;private set; }
     public const float GroundCheckRadius = 0.5f;
     public float MovementSpeed;
     public float Sensitivity;
+    public float ActionMultiplier = 1f;
     private float _m_jumpheight_;
     private float xrot = 0;
     public float JumpHeight
@@ -59,11 +60,12 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(GroundCheck.position, GroundCheckRadius);
     }
-    public void Initiate(MovementConfig config)
+    public void Initiate(MovementConfig config,Transform head)
     {
         Gravity = config.Gravity;
         MovementSpeed = config.MovementSpeed;
         Sensitivity = config.Sensitivity;
+        Head = head;
     }
     Vector3 move = Vector3.zero;
     /// <summary>
@@ -79,15 +81,15 @@ public class PlayerMovement : MonoBehaviour
         float x = axis.x * MovementSpeed * Time.deltaTime;
         float z = axis.y * MovementSpeed * Time.deltaTime;
 
-        float mx = mouse.x * Sensitivity * Time.deltaTime;
-        float my = mouse.y * Sensitivity * Time.deltaTime;
+        float mx = mouse.x * Sensitivity * Time.deltaTime * ActionMultiplier;
+        float my = mouse.y * Sensitivity * Time.deltaTime * ActionMultiplier;
 
         xrot -= my;
         xrot = Mathf.Clamp(xrot, -90, 90);
-        Head.transform.rotation = Quaternion.Euler(xrot, 0, 0);
+        Head.localRotation = Quaternion.Euler(xrot, 0, 0);
         transform.Rotate(Vector3.up * mx);
 
-        move = transform.forward * z + transform.right * z;
+        move = transform.forward * z * ActionMultiplier + transform.right * x * ActionMultiplier;
 
         if (Input.GetKeyDown(jump) && IsGrounded)
         {
@@ -101,9 +103,10 @@ public class PlayerMovement : MonoBehaviour
         {
             move.y += Gravity * Time.deltaTime;
         }
+        cc.Move(move);
     }
 }
-
+[System.Serializable]
 public class MovementConfig
 {
     public float MovementSpeed = 10;
