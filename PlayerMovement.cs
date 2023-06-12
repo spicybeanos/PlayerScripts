@@ -42,6 +42,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+    private void Awake()
+    {
+        xrot = Head.rotation.eulerAngles.x;
+    }
     private void Start()
     {
         if(!TryGetComponent<CharacterController>(out cc))
@@ -60,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(GroundCheck.position, GroundCheckRadius);
     }
+
     public void Initiate(MovementConfig config,Transform head)
     {
         Gravity = config.Gravity;

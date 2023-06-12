@@ -4,7 +4,7 @@ public class Player : MonoBehaviour
 {
     Inventory inventory;
     public Transform head;
-    public PlayerItemInteractor itemInteractor;
+    public ItemInterator itemInteractor;
     public PlayerMovement movement;
     [SerializeField]
     public MovementConfig movementConfig;

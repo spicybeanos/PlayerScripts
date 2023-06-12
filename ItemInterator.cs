@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerItemInteractor : MonoBehaviour
+public class ItemInterator : MonoBehaviour
 {
     public LayerMask ItemLayerMask;
     public float ItemScanDistance = 5f;
@@ -14,7 +14,7 @@ public class PlayerItemInteractor : MonoBehaviour
             if (hit.collider != null)
             {
                 ItemObject itemObject;
-                if (hit.collider.gameObject.TryGetComponent<ItemObject>(out itemObject))
+                if (hit.collider.gameObject.TryGetComponent(out itemObject))
                 {
                     return new Result<ItemObject>(true, itemObject);
                 }
